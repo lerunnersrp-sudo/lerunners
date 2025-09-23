@@ -17,7 +17,6 @@ function initializeDashboard(user) {
     });
 
     function buildUI(userType, activeView) {
-        // Constrói a navegação
         const navItems = getNavItems(userType);
         sidebarNav.innerHTML = '';
         navItems.forEach(item => {
@@ -28,18 +27,17 @@ function initializeDashboard(user) {
             link.innerHTML = `<i class='bx ${item.icon}'></i> ${item.label}`;
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                buildUI(userType, item.view); // Reconstrói a UI com a nova view ativa
+                buildUI(userType, item.view);
             });
             sidebarNav.appendChild(link);
         });
 
-        // Constrói o conteúdo principal
         headerTitle.textContent = navItems.find(item => item.view === activeView).label;
         renderContent(activeView);
     }
 
     function renderContent(view) {
-        contentArea.innerHTML = ''; // Limpa a área
+        contentArea.innerHTML = '';
         switch(view) {
             case 'dashboard':
                 if (currentUserData.tipo === 'aluno') contentArea.innerHTML = renderAlunoDashboard();
@@ -51,9 +49,8 @@ function initializeDashboard(user) {
             case 'perfil':
                 contentArea.innerHTML = renderPerfilView();
                 break;
-            // Adicionar outras views aqui no futuro (ex: planilhas, financeiro)
             default:
-                contentArea.innerHTML = `<h1>Página em construção</h1><p>A funcionalidade para '${view}' será implementada em breve.</p>`;
+                contentArea.innerHTML = `<div class="card"><h3 class="card-title">Página em Construção</h3><p class="card-content">A funcionalidade para '${view}' será implementada em breve.</p></div>`;
         }
     }
 
