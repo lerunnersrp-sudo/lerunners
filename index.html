@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma LeRunners</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <div id="login-view">
+            <h2>Login - LeRunners</h2>
+            <input type="email" id="loginEmail" placeholder="Seu e-mail" required>
+            <input type="password" id="loginPassword" placeholder="Sua senha" required>
+            <button id="loginButton">Entrar</button>
+            <p>Não tem uma conta? <a href="#" id="showRegister">Cadastre-se</a></p>
+        </div>
+
+        <div id="register-view" class="hidden">
+            <h2>Cadastro - LeRunners</h2>
+            <input type="text" id="registerName" placeholder="Nome Completo" required>
+            <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
+            <input type="password" id="registerPassword" placeholder="Crie uma senha" required>
+            
+            <div class="role-selector">
+                <span>Eu sou:</span>
+                <input type="radio" id="roleAluno" name="role" value="aluno" checked>
+                <label for="roleAluno">Aluno</label>
+                <input type="radio" id="roleProfessor" name="role" value="professor">
+                <label for="roleProfessor">Professor</label>
+            </div>
+
+            <button id="registerButton">Cadastrar</button>
+            <p>Já tem uma conta? <a href="#" id="showLogin">Faça Login</a></p>
+        </div>
+    </div>
+
+    <!-- SDKs do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    
+    <!-- Nosso script -->
+    <script src="app.js"></script>
+
+</body>
+</html>
