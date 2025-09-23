@@ -7,58 +7,42 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-    <!-- SDKs do Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
-    <!-- Nossos Scripts -->
-    <script src="js/config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script defer src="js/config.js"></script>
+    <script defer src="js/auth.js"></script>
+    <script defer src="js/dashboard.js"></script>
 </head>
 <body id="dashboard-page" class="dashboard-body">
-    <header class="dashboard-header">
-        <h1 class="text-xl font-bold">LeRunners</h1>
-        <div class="user-info">
-            <span id="user-name" class="user-name-display">Carregando...</span>
-            <button id="logout-button" class="logout-button">Sair</button>
-        </div>
-    </header>
-
-    <main class="dashboard-main">
-        <!-- Container que será exibido para o ALUNO -->
-        <div id="aluno-view" class="hidden">
-            <h2 class="section-title">Painel do Atleta</h2>
-            <div class="grid-container">
-                <div class="card">
-                    <h3 class="card-title">Conexão Strava</h3>
-                    <p class="card-content">Conecte sua conta do Strava para sincronizar suas corridas e começar a análise de performance.</p>
-                    <button class="strava-button">
-                        <i class='bx bxl-strava'></i> Conectar com Strava
-                    </button>
-                </div>
-                <div class="card">
-                    <h3 class="card-title">Minha Planilha</h3>
-                    <p class="card-content">Sua planilha de treinos da semana aparecerá aqui.</p>
-                </div>
+    <div class="app-shell">
+        <!-- BARRA DE NAVEGAÇÃO LATERAL -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.633 3.13306C12.7831 1.70772 11.2169 1.70772 10.367 3.13306L3.13296 15.3671C2.28306 16.7924 3.06617 18.75 4.7659 18.75H19.2341C20.9338 18.75 21.7169 16.7924 20.867 15.3671L13.633 3.13306Z" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>LeRunners</span>
             </div>
-        </div>
-
-        <!-- Container que será exibido para o PROFESSOR -->
-        <div id="professor-view" class="hidden">
-            <h2 class="section-title">Painel do Gestor</h2>
-            <div class="grid-container">
-                <div class="card full-width">
-                    <h3 class="card-title">Atletas da Equipe</h3>
-                    <p class="card-content">Abaixo está a lista de todos os atletas cadastrados na plataforma.</p>
-                    <div id="lista-atletas" class="athlete-list">
-                        <!-- A lista de atletas será inserida aqui pelo JavaScript -->
-                        <p>Carregando atletas...</p>
-                    </div>
-                </div>
+            <nav id="sidebar-nav" class="sidebar-nav">
+                <!-- Links de navegação serão inseridos aqui pelo JS -->
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-button" class="logout-button"><i class='bx bx-log-out'></i> Sair</button>
             </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <div class="main-content">
+            <header class="main-header">
+                <h1 id="welcome-message" class="welcome-title">Carregando...</h1>
+            </header>
+
+            <main id="content-area" class="content-area">
+                <!-- O conteúdo dinâmico será carregado aqui pelo JS -->
+            </main>
         </div>
-    </main>
+    </div>
 </body>
 </html>
