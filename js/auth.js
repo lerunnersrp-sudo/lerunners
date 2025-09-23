@@ -9,7 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const isDashboardPage = document.body.id === 'dashboard-page';
         if (user) {
             if (isDashboardPage) {
-                if (typeof initializeDashboard === 'function') { initializeDashboard(user); }
+                if (typeof initializeDashboard === 'function') { 
+                    initializeDashboard(user); 
+                } else {
+                    console.error("Erro fatal: dashboard.js não foi carregado.");
+                }
             } else { window.location.replace('dashboard.html'); }
         } else {
             if (isDashboardPage) { window.location.replace('index.html'); }
@@ -72,6 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- LÓGICA DE LOGOUT ---
-    const logoutButton = document.getElementById('logout-button');
-    if (logoutButton) { logoutButton.addEventListener('click', () => auth.signOut()); }
+    // Acessa o botão a partir do escopo do documento para garantir que seja encontrado
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.id == 'logout-button') {
+            auth.signOut();
+        }
+    });
 });
