@@ -4,44 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma LeRunners</title>
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Nosso CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <div id="login-view">
-            <h2>Login - LeRunners</h2>
-            <input type="email" id="loginEmail" placeholder="Seu e-mail" required>
-            <input type="password" id="loginPassword" placeholder="Sua senha" required>
-            <button id="loginButton">Entrar</button>
-            <p>Não tem uma conta? <a href="#" id="showRegister">Cadastre-se</a></p>
-        </div>
-
-        <div id="register-view" class="hidden">
-            <h2>Cadastro - LeRunners</h2>
-            <input type="text" id="registerName" placeholder="Nome Completo" required>
-            <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
-            <input type="password" id="registerPassword" placeholder="Crie uma senha" required>
-            
-            <div class="role-selector">
-                <span>Eu sou:</span>
-                <input type="radio" id="roleAluno" name="role" value="aluno" checked>
-                <label for="roleAluno">Aluno</label>
-                <input type="radio" id="roleProfessor" name="role" value="professor">
-                <label for="roleProfessor">Professor</label>
+    <main class="main-container">
+        <!-- Painel de Branding (Esquerda) -->
+        <div class="branding-panel">
+            <div class="branding-content">
+                <!-- Logo LeRunners (SVG) -->
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo">
+                    <path d="M13.633 3.13306C12.7831 1.70772 11.2169 1.70772 10.367 3.13306L3.13296 15.3671C2.28306 16.7924 3.06617 18.75 4.7659 18.75H19.2341C20.9338 18.75 21.7169 16.7924 20.867 15.3671L13.633 3.13306Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 14L12 9L16 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>Bem-vindo à LeRunners</h1>
+                <p>Sua jornada para o próximo nível começa aqui.</p>
             </div>
-
-            <button id="registerButton">Cadastrar</button>
-            <p>Já tem uma conta? <a href="#" id="showLogin">Faça Login</a></p>
         </div>
-    </div>
+
+        <!-- Painel de Formulário (Direita) -->
+        <div class="form-panel">
+            <div class="form-container">
+                <!-- Formulário de Login -->
+                <div id="login-view">
+                    <h2>Acesse sua Conta</h2>
+                    <p class="subtitle">Insira seus dados para continuar.</p>
+                    <div class="input-group">
+                        <input type="email" id="loginEmail" placeholder="Seu e-mail" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="loginPassword" placeholder="Sua senha" required>
+                    </div>
+                    <button id="loginButton">Entrar</button>
+                    <p class="toggle-link">Não tem uma conta? <a href="#" id="showRegister">Cadastre-se</a></p>
+                </div>
+
+                <!-- Formulário de Cadastro -->
+                <div id="register-view" class="hidden">
+                    <h2>Crie sua Conta</h2>
+                    <p class="subtitle">Preencha os campos para se registrar.</p>
+                    <div class="input-group">
+                        <input type="text" id="registerName" placeholder="Nome Completo" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="registerEmail" placeholder="Seu e-mail" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="registerPassword" placeholder="Crie uma senha" required>
+                    </div>
+                    
+                    <div class="role-selector">
+                        <span>Eu sou:</span>
+                        <input type="radio" id="roleAluno" name="role" value="aluno" checked>
+                        <label for="roleAluno">Aluno</label>
+                        <input type="radio" id="roleProfessor" name="role" value="professor">
+                        <label for="roleProfessor">Professor</label>
+                    </div>
+
+                    <button id="registerButton">Cadastrar</button>
+                    <p class="toggle-link">Já tem uma conta? <a href="#" id="showLogin">Faça Login</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <!-- SDKs do Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     
-    <!-- Nosso script -->
+    <!-- Nosso script de lógica -->
     <script src="app.js"></script>
 
 </body>
