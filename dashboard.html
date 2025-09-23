@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - LeRunners</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- SDKs do Firebase -->
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Nossos Scripts -->
+    <script defer src="js/config.js"></script>
+    <script defer src="js/auth.js"></script>
+</head>
+<body id="dashboard-page" class="dashboard-body">
+    <header class="dashboard-header">
+        <h1 class="text-xl font-bold">LeRunners</h1>
+        <div>
+            <span id="user-email" class="user-email-display"></span>
+            <button id="logout-button" class="logout-button">Sair</button>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <h2 class="section-title">Meu Desempenho</h2>
+        <!-- O conteúdo principal da plataforma entrará aqui -->
+        <p>Em breve, seus gráficos de desempenho e planilhas de treino estarão aqui.</p>
+    </main>
+</body>
+</html>
