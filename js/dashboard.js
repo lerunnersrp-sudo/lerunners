@@ -4,99 +4,116 @@ function initializeDashboard(user) {
     const db = firebase.database();
     const contentArea = document.getElementById('content-area');
     const sidebarNav = document.getElementById('sidebar-nav');
-    const welcomeMessage = document.getElementById('welcome-message');
+    const headerTitle = document.getElementById('header-title');
     
+    let currentUserData = {};
+
     const userRef = db.ref('usuarios/' + user.uid);
     userRef.on('value', (snapshot) => {
-        const userData = snapshot.val();
-        if (userData) {
-            welcomeMessage.textContent = `Olá, ${userData.nome.split(' ')[0]}!`;
-            buildUI(userData.tipo);
+        currentUserData = snapshot.val();
+        if (currentUserData) {
+            buildUI(currentUserData.tipo, 'dashboard'); // Carrega a view inicial
         }
     });
 
-    function buildUI(userType) {
-        // Limpa a UI antiga antes de construir a nova
-        sidebarNav.innerHTML = '';
-        contentArea.innerHTML = '';
-
+    function buildUI(userType, activeView) {
         // Constrói a navegação
         const navItems = getNavItems(userType);
+        sidebarNav.innerHTML = '';
         navItems.forEach(item => {
             const link = document.createElement('a');
             link.href = '#';
-            link.className = `nav-link ${item.active ? 'active' : ''}`;
+            link.className = `nav-link ${item.view === activeView ? 'active' : ''}`;
+            link.dataset.view = item.view;
             link.innerHTML = `<i class='bx ${item.icon}'></i> ${item.label}`;
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                buildUI(userType, item.view); // Reconstrói a UI com a nova view ativa
+            });
             sidebarNav.appendChild(link);
         });
 
         // Constrói o conteúdo principal
-        if (userType === 'aluno') {
-            contentArea.innerHTML = buildAlunoDashboard();
-        } else if (userType === 'professor') {
-            contentArea.innerHTML = buildProfessorDashboard();
-            carregarListaDeAtletas();
+        headerTitle.textContent = navItems.find(item => item.view === activeView).label;
+        renderContent(activeView);
+    }
+
+    function renderContent(view) {
+        contentArea.innerHTML = ''; // Limpa a área
+        switch(view) {
+            case 'dashboard':
+                if (currentUserData.tipo === 'aluno') contentArea.innerHTML = renderAlunoDashboard();
+                if (currentUserData.tipo === 'professor') {
+                    contentArea.innerHTML = renderProfessorDashboard();
+                    carregarListaDeAtletas();
+                }
+                break;
+            case 'perfil':
+                contentArea.innerHTML = renderPerfilView();
+                break;
+            // Adicionar outras views aqui no futuro (ex: planilhas, financeiro)
+            default:
+                contentArea.innerHTML = `<h1>Página em construção</h1><p>A funcionalidade para '${view}' será implementada em breve.</p>`;
         }
     }
 
     function getNavItems(userType) {
         const baseItems = [
-            { label: 'Dashboard', icon: 'bxs-dashboard', active: true },
-            { label: 'Meu Perfil', icon: 'bxs-user-circle', active: false }
+            { label: 'Dashboard', icon: 'bxs-dashboard', view: 'dashboard' },
+            { label: 'Meu Perfil', icon: 'bxs-user-circle', view: 'perfil' }
         ];
-        if (userType === 'aluno') {
-            return [ ...baseItems, { label: 'Minhas Planilhas', icon: 'bx-spreadsheet', active: false } ];
-        }
-        if (userType === 'professor') {
-            return [ ...baseItems, { label: 'Gestão de Atletas', icon: 'bxs-group', active: false }, { label: 'Financeiro', icon: 'bx-dollar-circle', active: false } ];
-        }
+        if (userType === 'aluno') return [ ...baseItems, { label: 'Minhas Planilhas', icon: 'bx-spreadsheet', view: 'planilhas' } ];
+        if (userType === 'professor') return [ ...baseItems, { label: 'Gestão de Atletas', icon: 'bxs-group', view: 'gestao' }, { label: 'Financeiro', icon: 'bx-dollar-circle', view: 'financeiro' } ];
         return baseItems;
     }
 
-    function buildAlunoDashboard() {
+    // --- FUNÇÕES DE RENDERIZAÇÃO DE CONTEÚDO ---
+    function renderAlunoDashboard() {
         return `
             <div class="grid-container">
                 <div class="card">
                     <div class="card-header">
                         <div class="card-icon"><i class='bx bxl-strava'></i></div>
-                        <div>
-                            <h3 class="card-title">Conexão com Strava</h3>
-                            <p class="card-content">Sincronize suas atividades para análise de performance.</p>
-                        </div>
+                        <div><h3 class="card-title">Conexão com Strava</h3><p class="card-content">Sincronize suas atividades para análise de performance.</p></div>
                     </div>
                     <button class="card-button strava">Conectar com Strava</button>
                 </div>
                 <div class="card">
                     <div class="card-header">
                         <div class="card-icon"><i class='bx bx-spreadsheet'></i></div>
-                        <div>
-                            <h3 class="card-title">Minha Planilha</h3>
-                            <p class="card-content">Sua planilha de treinos da semana aparecerá aqui.</p>
-                        </div>
+                        <div><h3 class="card-title">Minha Planilha</h3><p class="card-content">Sua planilha de treinos da semana aparecerá aqui.</p></div>
                     </div>
                 </div>
             </div>`;
     }
 
-    function buildProfessorDashboard() {
+    function renderProfessorDashboard() {
         return `
             <div class="card full-width data-table-card">
                 <div class="card-header">
                      <div class="card-icon"><i class='bx bxs-group'></i></div>
-                     <div>
-                        <h3 class="card-title">Atletas da Equipe</h3>
-                        <p class="card-content">Lista de todos os atletas cadastrados na plataforma.</p>
-                     </div>
+                     <div><h3 class="card-title">Atletas da Equipe</h3><p class="card-content">Lista de todos os atletas cadastrados na plataforma.</p></div>
                 </div>
                 <div class="athlete-table-container">
                     <table class="athlete-table">
-                        <thead>
-                            <tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Data de Cadastro</th></tr>
-                        </thead>
-                        <tbody id="athlete-table-body">
-                            <tr><td colspan="4" style="text-align:center; padding: 2rem;">Carregando atletas...</td></tr>
-                        </tbody>
+                        <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Data de Cadastro</th></tr></thead>
+                        <tbody id="athlete-table-body"><tr><td colspan="4" style="text-align:center; padding: 2rem;">Carregando...</td></tr></tbody>
                     </table>
+                </div>
+            </div>`;
+    }
+
+    function renderPerfilView() {
+        return `
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon"><i class='bx bxs-user-circle'></i></div>
+                    <div><h3 class="card-title">Meus Dados</h3><p class="card-content">Informações do seu perfil.</p></div>
+                </div>
+                <div style="padding: 1rem 0;">
+                    <p><strong>Nome:</strong> ${currentUserData.nome}</p>
+                    <p><strong>Email:</strong> ${currentUserData.email}</p>
+                    <p><strong>Tipo:</strong> <span class="status-badge ${currentUserData.tipo}">${currentUserData.tipo}</span></p>
                 </div>
             </div>`;
     }
@@ -106,8 +123,7 @@ function initializeDashboard(user) {
         todosUsuariosRef.on('value', (snapshot) => {
             const tableBody = document.getElementById('athlete-table-body');
             if (!tableBody) return;
-
-            tableBody.innerHTML = ''; // Limpa a tabela
+            tableBody.innerHTML = '';
             const todosUsuarios = snapshot.val();
             if (todosUsuarios) {
                 Object.values(todosUsuarios).forEach(usuario => {
@@ -120,7 +136,7 @@ function initializeDashboard(user) {
                     `;
                 });
             } else {
-                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">Nenhum atleta encontrado.</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">Nenhum atleta.</td></tr>';
             }
         });
     }
