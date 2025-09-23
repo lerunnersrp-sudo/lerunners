@@ -5,29 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - LeRunners</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
     <!-- SDKs do Firebase -->
-    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <!-- Nossos Scripts -->
-    <script defer src="js/config.js"></script>
-    <script defer src="js/auth.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
 </head>
 <body id="dashboard-page" class="dashboard-body">
     <header class="dashboard-header">
         <h1 class="text-xl font-bold">LeRunners</h1>
-        <div>
-            <span id="user-email" class="user-email-display"></span>
+        <div class="user-info">
+            <span id="user-name" class="user-name-display">Carregando...</span>
             <button id="logout-button" class="logout-button">Sair</button>
         </div>
     </header>
 
     <main class="dashboard-main">
-        <h2 class="section-title">Meu Desempenho</h2>
-        <!-- O conteúdo principal da plataforma entrará aqui -->
-        <p>Em breve, seus gráficos de desempenho e planilhas de treino estarão aqui.</p>
+        <!-- Container que será exibido para o ALUNO -->
+        <div id="aluno-view" class="hidden">
+            <h2 class="section-title">Painel do Atleta</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <h3 class="card-title">Conexão Strava</h3>
+                    <p class="card-content">Conecte sua conta do Strava para sincronizar suas corridas e começar a análise de performance.</p>
+                    <button class="strava-button">
+                        <i class='bx bxl-strava'></i> Conectar com Strava
+                    </button>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Minha Planilha</h3>
+                    <p class="card-content">Sua planilha de treinos da semana aparecerá aqui.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container que será exibido para o PROFESSOR -->
+        <div id="professor-view" class="hidden">
+            <h2 class="section-title">Painel do Gestor</h2>
+            <div class="grid-container">
+                <div class="card full-width">
+                    <h3 class="card-title">Atletas da Equipe</h3>
+                    <p class="card-content">Abaixo está a lista de todos os atletas cadastrados na plataforma.</p>
+                    <div id="lista-atletas" class="athlete-list">
+                        <!-- A lista de atletas será inserida aqui pelo JavaScript -->
+                        <p>Carregando atletas...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 </body>
 </html>
