@@ -14,26 +14,66 @@
     <script defer src="js/auth.js"></script>
 </head>
 <body class="login-page">
-    <div class="form-container">
-        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-login">
-            <path d="M13.633 3.13306C12.7831 1.70772 11.2169 1.70772 10.367 3.13306L3.13296 15.3671C2.28306 16.7924 3.06617 18.75 4.7659 18.75H19.2341C20.9338 18.75 21.7169 16.7924 20.867 15.3671L13.633 3.13306Z" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M8 14L12 9L16 14" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h1 class="text-2xl font-bold text-center mb-1">Plataforma LeRunners</h1>
-        <p class="text-center text-gray-400 mb-6">Acesso de Atletas e Gestores</p>
-        
-        <form id="login-form">
-            <div>
-                <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" class="form-input" required>
+    <div class="form-wrapper">
+        <!-- FORMULÁRIO DE LOGIN (INICIALMENTE VISÍVEL) -->
+        <div id="login-view">
+            <div class="form-container">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-login">
+                    <path d="M13.633 3.13306C12.7831 1.70772 11.2169 1.70772 10.367 3.13306L3.13296 15.3671C2.28306 16.7924 3.06617 18.75 4.7659 18.75H19.2341C20.9338 18.75 21.7169 16.7924 20.867 15.3671L13.633 3.13306Z" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 14L12 9L16 14" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1 class="text-2xl font-bold text-center mb-1">Plataforma LeRunners</h1>
+                <p class="text-center text-gray-400 mb-6">Acesse sua conta</p>
+                <form id="login-form">
+                    <div>
+                        <label for="login-email" class="form-label">Email</label>
+                        <input type="email" id="login-email" class="form-input" required>
+                    </div>
+                    <div>
+                        <label for="login-password" class="form-label">Senha</label>
+                        <input type="password" id="login-password" class="form-input" required>
+                    </div>
+                    <p id="login-error" class="login-error-message"></p>
+                    <button type="submit" class="form-button">Entrar</button>
+                </form>
+                <p class="toggle-form-text">Não tem uma conta? <a href="#" id="show-register-link">Cadastre-se</a></p>
             </div>
-            <div>
-                <label for="password" class="form-label">Senha</label>
-                <input type="password" id="password" class="form-input" required>
+        </div>
+
+        <!-- FORMULÁRIO DE CADASTRO (INICIALMENTE OCULTO) -->
+        <div id="register-view" class="hidden">
+            <div class="form-container">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-login">
+                     <path d="M13.633 3.13306C12.7831 1.70772 11.2169 1.70772 10.367 3.13306L3.13296 15.3671C2.28306 16.7924 3.06617 18.75 4.7659 18.75H19.2341C20.9338 18.75 21.7169 16.7924 20.867 15.3671L13.633 3.13306Z" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1 class="text-2xl font-bold text-center mb-1">Crie sua Conta</h1>
+                <p class="text-center text-gray-400 mb-6">Junte-se à equipe LeRunners</p>
+                <form id="register-form">
+                     <div>
+                        <label for="register-name" class="form-label">Nome Completo</label>
+                        <input type="text" id="register-name" class="form-input" required>
+                    </div>
+                    <div>
+                        <label for="register-email" class="form-label">Email</label>
+                        <input type="email" id="register-email" class="form-input" required>
+                    </div>
+                    <div>
+                        <label for="register-password" class="form-label">Senha</label>
+                        <input type="password" id="register-password" class="form-input" required>
+                    </div>
+                    <div class="role-selector">
+                        <span class="form-label">Eu sou:</span>
+                        <div>
+                            <input type="radio" id="role-aluno" name="role" value="aluno" checked><label for="role-aluno">Aluno</label>
+                            <input type="radio" id="role-professor" name="role" value="professor"><label for="role-professor">Professor</label>
+                        </div>
+                    </div>
+                    <p id="register-error" class="login-error-message"></p>
+                    <button type="submit" class="form-button">Cadastrar</button>
+                </form>
+                <p class="toggle-form-text">Já tem uma conta? <a href="#" id="show-login-link">Faça Login</a></p>
             </div>
-            <p id="login-error" class="login-error-message"></p>
-            <button type="submit" class="form-button">Entrar</button>
-        </form>
+        </div>
     </div>
 </body>
 </html>
