@@ -1,6 +1,3 @@
-// ===================================================================
-// ARQUIVO DE CONFIGURAÇÃO - Contém as chaves de conexão do projeto.
-// ===================================================================
 const FIREBASE_CONFIG = {
     apiKey: "AIzaSyDGLozMAqDoQdP_znYi3mbebUomE-_O6hU",
     authDomain: "lerunners.firebaseapp.com",
@@ -10,9 +7,8 @@ const FIREBASE_CONFIG = {
     messagingSenderId: "786096020973",
     appId: "1:786096020973:web:334dc555218cedb0e1dbe4"
 };
-
 const CLOUDINARY_CONFIG = {
     CLOUD_NAME: "dd6ppm6nf",
     API_KEY: "845911223412467",
-    API_SECRET: "S6YefZx7J5StgcTV-greU4wFhP4"
+    API_SECRET: "S6YefZxJ5StgcTV-greU4wFhP4"
 };
