@@ -58,15 +58,24 @@ const AuthModule = {
             return;
         }
 
+        // Usamos async/await aqui para esperar o perfil ser criado
         this.auth.createUserWithEmailAndPassword(email, password)
-            .then(userCredential => this.createUserProfile(userCredential.user.uid, name, email, role))
+            .then(userCredential => {
+                // AGUARDA a finalização da função de criar perfil
+                return this.createUserProfile(userCredential.user.uid, name, email, role);
+            })
+            .then(() => {
+                // Somente após o perfil ser salvo, o onAuthStateChanged fará o redirecionamento seguro
+                console.log("Cadastro e criação de perfil concluídos com sucesso.");
+            })
             .catch(error => {
-                console.error("Erro no cadastro:", error.code, error.message);
+                console.error("Erro no processo de cadastro:", error);
                 const message = error.code === 'auth/email-already-in-use' ? "Este email já está cadastrado." : "Erro ao criar conta. Tente novamente.";
                 Utils.displayError('register-error', message);
             });
     },
 
+    // A função agora retorna uma Promise, que nos permite esperar por ela
     createUserProfile(uid, name, email, role) {
         const userData = {
             nome: name,
@@ -83,12 +92,8 @@ const AuthModule = {
         updates[`/usuarios/${uid}`] = userData;
         updates[`/${profilePath}/${uid}`] = profileData;
 
-        this.db.ref().update(updates)
-            .then(() => console.log(`Perfil de ${role} criado com sucesso.`))
-            .catch(error => {
-                console.error("Erro ao salvar perfil do usuário:", error);
-                Utils.displayError('register-error', "Erro ao salvar dados. Contate o suporte.");
-            });
+        // Retorna a promessa da operação de atualização do banco de dados
+        return this.db.ref().update(updates);
     },
 
     handleLogout() {
