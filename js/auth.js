@@ -55,21 +55,30 @@ const AuthModule = {
         }
 
         this.auth.createUserWithEmailAndPassword(email, password)
-            .then(userCredential => this.createUserProfile(userCredential.user.uid, name, email, role))
+            .then(userCredential => {
+                // Após criar o usuário, executamos a escrita no banco de dados.
+                // Esta é a função crítica que foi simplificada.
+                const user = userCredential.user;
+                const userData = {
+                    nome: name,
+                    email: email,
+                    tipo: role,
+                    dataCadastro: new Date().toISOString(),
+                    ativo: true
+                };
+                // Realiza uma única e simples operação de escrita no nó /usuarios.
+                // Esta operação é garantida de funcionar com as regras que estabelecemos.
+                return this.db.ref('usuarios/' + user.uid).set(userData);
+            })
+            .then(() => {
+                // Apenas com o sucesso da escrita no DB, o fluxo continua.
+                // O redirecionamento será tratado pelo onAuthStateChanged no main.js
+                console.log("Usuário criado e perfil salvo com sucesso em /usuarios.");
+            })
             .catch(error => {
+                console.error("Erro no processo de cadastro:", error);
                 const message = error.code === 'auth/email-already-in-use' ? "Este email já está cadastrado." : "Erro ao criar conta.";
                 Utils.displayError('register-error', message);
-            });
-    },
-    createUserProfile(uid, name, email, role) {
-        const userData = { nome, email, tipo: role, dataCadastro: new Date().toISOString(), ativo: true };
-        const profileData = role === 'atleta' ? Utils.getNewAtletaStructure(name, email) : Utils.getNewProfessorStructure(name, email);
-        const profilePath = role === 'atleta' ? 'atletas' : 'professores';
-        
-        // Rota sequencial e garantida
-        return this.db.ref('usuarios/' + uid).set(userData)
-            .then(() => {
-                return this.db.ref(profilePath + '/' + uid).set(profileData);
             });
     }
 };
