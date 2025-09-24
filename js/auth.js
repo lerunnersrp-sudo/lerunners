@@ -4,7 +4,6 @@ const AuthModule = {
         this.db = firebase.database();
         this.addEventListeners();
     },
-
     addEventListeners() {
         const loginForm = document.getElementById('login-form');
         if (loginForm) loginForm.addEventListener('submit', (e) => this.handleLogin(e));
@@ -32,7 +31,6 @@ const AuthModule = {
             });
         }
     },
-
     handleLogin(event) {
         event.preventDefault();
         const email = document.getElementById('login-email').value;
@@ -40,11 +38,9 @@ const AuthModule = {
         Utils.clearError('login-error');
         this.auth.signInWithEmailAndPassword(email, password)
             .catch(error => {
-                console.error("Erro no login:", error.code, error.message);
                 Utils.displayError('login-error', 'Email ou senha inválidos.');
             });
     },
-
     handleRegister(event) {
         event.preventDefault();
         const name = document.getElementById('register-name').value;
@@ -58,45 +54,22 @@ const AuthModule = {
             return;
         }
 
-        // Usamos async/await aqui para esperar o perfil ser criado
         this.auth.createUserWithEmailAndPassword(email, password)
-            .then(userCredential => {
-                // AGUARDA a finalização da função de criar perfil
-                return this.createUserProfile(userCredential.user.uid, name, email, role);
-            })
-            .then(() => {
-                // Somente após o perfil ser salvo, o onAuthStateChanged fará o redirecionamento seguro
-                console.log("Cadastro e criação de perfil concluídos com sucesso.");
-            })
+            .then(userCredential => this.createUserProfile(userCredential.user.uid, name, email, role))
             .catch(error => {
-                console.error("Erro no processo de cadastro:", error);
-                const message = error.code === 'auth/email-already-in-use' ? "Este email já está cadastrado." : "Erro ao criar conta. Tente novamente.";
+                const message = error.code === 'auth/email-already-in-use' ? "Este email já está cadastrado." : "Erro ao criar conta.";
                 Utils.displayError('register-error', message);
             });
     },
-
-    // A função agora retorna uma Promise, que nos permite esperar por ela
     createUserProfile(uid, name, email, role) {
-        const userData = {
-            nome: name,
-            email: email,
-            tipo: role,
-            dataCadastro: new Date().toISOString(),
-            ativo: true
-        };
-
+        const userData = { nome, email, tipo: role, dataCadastro: new Date().toISOString(), ativo: true };
         const profileData = role === 'atleta' ? Utils.getNewAtletaStructure(name, email) : Utils.getNewProfessorStructure(name, email);
         const profilePath = role === 'atleta' ? 'atletas' : 'professores';
-
-        const updates = {};
-        updates[`/usuarios/${uid}`] = userData;
-        updates[`/${profilePath}/${uid}`] = profileData;
-
-        // Retorna a promessa da operação de atualização do banco de dados
-        return this.db.ref().update(updates);
-    },
-
-    handleLogout() {
-        this.auth.signOut().catch(error => console.error('Erro no logout:', error));
+        
+        // Rota sequencial e garantida
+        return this.db.ref('usuarios/' + uid).set(userData)
+            .then(() => {
+                return this.db.ref(profilePath + '/' + uid).set(profileData);
+            });
     }
 };
