@@ -1,62 +1,389 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-:root { --bg-darkest: #111827; --bg-dark: #1f2937; --bg-medium: #374151; --border-color: #4b5563; --text-primary: #e5e7eb; --text-secondary: #9ca3af; --brand-blue: #3b82f6; --brand-blue-hover: #2563eb; --brand-strava: #fc4c02; --brand-strava-hover: #e04402; --danger: #ef4444; }
-body { font-family: 'Inter', sans-serif; background-color: var(--bg-darkest); color: var(--text-primary); margin: 0; }
-.hidden { display: none !important; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap' );
+
+:root { 
+    --bg-darkest: #111827; 
+    --bg-dark: #1f2937; 
+    --bg-medium: #374151; 
+    --border-color: #4b5563; 
+    --text-primary: #e5e7eb; 
+    --text-secondary: #9ca3af; 
+    --brand-blue: #3b82f6; 
+    --brand-blue-hover: #2563eb; 
+    --brand-strava: #fc4c02; 
+    --brand-strava-hover: #e04402; 
+    --danger: #ef4444; 
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--bg-darkest); 
+    color: var(--text-primary); 
+    margin: 0; 
+}
+
+.hidden { 
+    display: none !important; 
+}
 
 /* --- TELA DE LOGIN / CADASTRO --- */
-.login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-.form-wrapper { width: 100%; max-width: 420px; }
-.form-container { background-color: var(--bg-dark); padding: 2.5rem; border-radius: 0.75rem; border: 1px solid var(--bg-medium); }
-.logo-login { margin: 0 auto 1rem auto; }
-.text-2xl { font-size: 1.5rem; } .font-bold { font-weight: 700; } .text-center { text-align: center; } .mb-1 { margin-bottom: 0.25rem; } .mb-6 { margin-bottom: 1.5rem; } .text-gray-400 { color: var(--text-secondary); }
-.form-label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 0.5rem; }
-.form-input { background-color: var(--bg-medium); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 1rem; border-radius: 0.375rem; display: block; width: 100%; padding: 0.75rem; }
-form div { margin-bottom: 1rem; }
-.form-input:focus { outline: 2px solid transparent; outline-offset: 2px; border-color: var(--brand-blue); }
-.login-error-message { color: var(--danger); font-size: 0.875rem; min-height: 1.25rem; text-align: center; margin-bottom: 0.5rem; font-weight: 500; }
-.form-button { display: block; width: 100%; padding: 0.75rem; background-color: var(--brand-blue); color: white; border: none; border-radius: 0.375rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-.form-button:hover { background-color: var(--brand-blue-hover); }
-.toggle-form-text { text-align: center; margin-top: 1.5rem; font-size: 0.875rem; color: var(--text-secondary); }
-.toggle-form-text a { color: var(--brand-blue); font-weight: 500; text-decoration: none; } .toggle-form-text a:hover { text-decoration: underline; }
-.role-selector div { display: flex; gap: 1rem; align-items: center; }
-.role-selector label { margin-right: 1rem; color: var(--text-primary); cursor: pointer; }
-.role-selector input { cursor: pointer; }
+.login-page { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh; 
+}
+
+.form-wrapper { 
+    width: 100%; 
+    max-width: 420px; 
+    padding: 1rem;
+}
+
+.form-container { 
+    background-color: var(--bg-dark); 
+    padding: 2.5rem; 
+    border-radius: 0.75rem; 
+    border: 1px solid var(--bg-medium); 
+}
+
+.logo-login { 
+    margin: 0 auto 1rem auto; 
+}
+
+.text-2xl { font-size: 1.5rem; } 
+.font-bold { font-weight: 700; } 
+.text-center { text-align: center; } 
+.mb-1 { margin-bottom: 0.25rem; } 
+.mb-6 { margin-bottom: 1.5rem; } 
+.text-gray-400 { color: var(--text-secondary); }
+
+.form-label { 
+    display: block; 
+    font-size: 0.875rem; 
+    font-weight: 500; 
+    color: var(--text-secondary); 
+    margin-bottom: 0.5rem; 
+}
+
+.form-input { 
+    background-color: var(--bg-medium); 
+    border: 1px solid var(--border-color); 
+    color: var(--text-primary); 
+    font-size: 1rem; 
+    border-radius: 0.375rem; 
+    display: block; 
+    width: 100%; 
+    padding: 0.75rem; 
+    box-sizing: border-box;
+}
+
+form div { 
+    margin-bottom: 1rem; 
+}
+
+.form-input:focus { 
+    outline: 2px solid transparent; 
+    outline-offset: 2px; 
+    border-color: var(--brand-blue); 
+}
+
+.login-error-message { 
+    color: var(--danger); 
+    font-size: 0.875rem; 
+    min-height: 1.25rem; 
+    text-align: center; 
+    margin-bottom: 0.5rem; 
+    font-weight: 500; 
+}
+
+.form-button { 
+    display: block; 
+    width: 100%; 
+    padding: 0.75rem; 
+    background-color: var(--brand-blue); 
+    color: white; 
+    border: none; 
+    border-radius: 0.375rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: background-color 0.2s; 
+}
+
+.form-button:hover { 
+    background-color: var(--brand-blue-hover); 
+}
+
+.toggle-form-text { 
+    text-align: center; 
+    margin-top: 1.5rem; 
+    font-size: 0.875rem; 
+    color: var(--text-secondary); 
+}
+
+.toggle-form-text a { 
+    color: var(--brand-blue); 
+    font-weight: 500; 
+    text-decoration: none; 
+} 
+
+.toggle-form-text a:hover { 
+    text-decoration: underline; 
+}
+
+.role-selector div { 
+    display: flex; 
+    gap: 1rem; 
+    align-items: center; 
+}
+
+.role-selector label { 
+    margin-right: 1rem; 
+    color: var(--text-primary); 
+    cursor: pointer; 
+}
+
+.role-selector input { 
+    cursor: pointer; 
+}
 
 /* --- ESTRUTURA PRINCIPAL (APP SHELL) --- */
-.app-shell { display: flex; height: 100vh; }
-.sidebar { width: 260px; background-color: var(--bg-dark); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 1.5rem; }
-.sidebar-header { display: flex; align-items: center; gap: 0.75rem; font-size: 1.25rem; font-weight: 700; margin-bottom: 2.5rem; }
-.sidebar-nav { flex-grow: 1; }
-.nav-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 0.5rem; color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: background-color 0.2s, color 0.2s; margin-bottom: 0.5rem; cursor: pointer; }
-.nav-link:hover { background-color: var(--bg-medium); color: var(--text-primary); }
-.nav-link.active { background-color: var(--brand-blue); color: white; }
-.nav-link i { font-size: 1.25rem; }
-.logout-button { background: none; border: none; color: var(--text-secondary); padding: 0.75rem; border-radius: 0.5rem; width: 100%; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500; }
-.logout-button:hover { background-color: var(--bg-medium); color: var(--text-primary); }
-.main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-.main-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-dark); position: sticky; top: 0; z-index: 10; }
-.welcome-title { font-size: 1.5rem; font-weight: 700; }
-.content-area { padding: 2rem; }
+.app-shell { 
+    display: flex; 
+    height: 100vh; 
+}
+
+.sidebar { 
+    width: 260px; 
+    background-color: var(--bg-dark); 
+    border-right: 1px solid var(--border-color); 
+    display: flex; 
+    flex-direction: column; 
+    padding: 1.5rem; 
+}
+
+.sidebar-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.75rem; 
+    font-size: 1.25rem; 
+    font-weight: 700; 
+    margin-bottom: 2.5rem; 
+    color: var(--text-primary);
+}
+
+.sidebar-nav { 
+    flex-grow: 1; 
+}
+
+.nav-link { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.75rem; 
+    padding: 0.75rem; 
+    border-radius: 0.5rem; 
+    color: var(--text-secondary); 
+    text-decoration: none; 
+    font-weight: 500; 
+    transition: background-color 0.2s, color 0.2s; 
+    margin-bottom: 0.5rem; 
+    cursor: pointer; 
+}
+
+.nav-link:hover { 
+    background-color: var(--bg-medium); 
+    color: var(--text-primary); 
+}
+
+.nav-link.active { 
+    background-color: var(--brand-blue); 
+    color: white; 
+}
+
+.nav-link i { 
+    font-size: 1.25rem; 
+}
+
+.logout-button { 
+    background: none; 
+    border: none; 
+    color: var(--text-secondary); 
+    padding: 0.75rem; 
+    border-radius: 0.5rem; 
+    width: 100%; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.75rem; 
+    cursor: pointer; 
+    font-family: 'Inter', sans-serif; 
+    font-size: 1rem; 
+    font-weight: 500; 
+}
+
+.logout-button:hover { 
+    background-color: var(--bg-medium); 
+    color: var(--text-primary); 
+}
+
+.main-content { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    overflow-y: auto; 
+}
+
+.main-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 1.5rem 2rem; 
+    border-bottom: 1px solid var(--border-color); 
+    background-color: var(--bg-dark); 
+    position: sticky; 
+    top: 0; 
+    z-index: 10; 
+}
+
+.welcome-title { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+}
+
+.content-area { 
+    padding: 2rem; 
+}
 
 /* --- COMPONENTES DO DASHBOARD --- */
-.grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-.card { background-color: var(--bg-dark); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
-.card.full-width { grid-column: 1 / -1; }
-.card-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
-.card-icon { font-size: 1.5rem; color: var(--brand-blue); background-color: var(--bg-medium); padding: 0.75rem; border-radius: 0.5rem; }
-.card-title { font-size: 1.125rem; font-weight: 600; color: white; }
-.card-content { color: var(--text-secondary); line-height: 1.6; flex-grow: 1; margin-bottom: 1.5rem; }
-.card-button { background-color: var(--brand-blue); color: white; border: none; padding: 0.65rem 1.25rem; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s; align-self: flex-start; }
-.card-button.strava { background-color: var(--brand-strava); } .card-button.strava:hover { background-color: var(--brand-strava-hover); }
-.data-table-card { padding: 0; }
-.data-table-card > .card-header { padding: 1.5rem 1.5rem 0 1.5rem; }
-.athlete-table-container { overflow-x: auto; }
-.athlete-table { width: 100%; border-collapse: collapse; text-align: left; }
-.athlete-table th, .athlete-table td { padding: 1rem 1.5rem; }
-.athlete-table thead { border-bottom: 1px solid var(--border-color); }
-.athlete-table th { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
-.athlete-table tbody tr:not(:last-child) { border-bottom: 1px solid var(--border-color); }
-.athlete-table tbody tr:hover { background-color: var(--bg-medium); }
-.status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; text-transform: capitalize; }
-.status-badge.aluno { background-color: #1e40af; color: #dbeafe; }
-.status-badge.professor { background-color: #86198f; color: #f0abfc; }
+.grid-container { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+    gap: 1.5rem; 
+}
+
+.card { 
+    background-color: var(--bg-dark); 
+    border-radius: 0.75rem; 
+    padding: 1.5rem; 
+    border: 1px solid var(--border-color); 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.card.full-width { 
+    grid-column: 1 / -1; 
+}
+
+.card-header { 
+    display: flex; 
+    align-items: flex-start; 
+    gap: 1rem; 
+    margin-bottom: 1rem; 
+}
+
+.card-icon { 
+    font-size: 1.5rem; 
+    color: var(--brand-blue); 
+    background-color: var(--bg-medium); 
+    padding: 0.75rem; 
+    border-radius: 0.5rem; 
+}
+
+.card-title { 
+    font-size: 1.125rem; 
+    font-weight: 600; 
+    color: white; 
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+}
+
+.card-content { 
+    color: var(--text-secondary); 
+    line-height: 1.6; 
+    flex-grow: 1; 
+    margin-bottom: 1.5rem; 
+    margin-top: 0;
+}
+
+.card-button { 
+    background-color: var(--brand-blue); 
+    color: white; 
+    border: none; 
+    padding: 0.65rem 1.25rem; 
+    border-radius: 0.5rem; 
+    font-weight: 500; 
+    cursor: pointer; 
+    transition: background-color 0.2s; 
+    align-self: flex-start; 
+}
+
+.card-button.strava { 
+    background-color: var(--brand-strava); 
+} 
+
+.card-button.strava:hover { 
+    background-color: var(--brand-strava-hover); 
+}
+
+.data-table-card { 
+    padding: 0; 
+}
+
+.data-table-card > .card-header { 
+    padding: 1.5rem 1.5rem 0 1.5rem; 
+}
+
+.athlete-table-container { 
+    overflow-x: auto; 
+}
+
+.athlete-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    text-align: left; 
+}
+
+.athlete-table th, .athlete-table td { 
+    padding: 1rem 1.5rem; 
+}
+
+.athlete-table thead { 
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.athlete-table th { 
+    font-size: 0.75rem; 
+    font-weight: 600; 
+    color: var(--text-secondary); 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+}
+
+.athlete-table tbody tr:not(:last-child) { 
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.athlete-table tbody tr:hover { 
+    background-color: var(--bg-medium); 
+}
+
+.status-badge { 
+    padding: 0.25rem 0.75rem; 
+    border-radius: 9999px; 
+    font-size: 0.75rem; 
+    font-weight: 500; 
+    text-transform: capitalize; 
+}
+
+.status-badge.atleta, .status-badge.aluno { 
+    background-color: #1e40af; 
+    color: #dbeafe; 
+}
+
+.status-badge.professor { 
+    background-color: #86198f; 
+    color: #f0abfc; 
+}
+
+.status-badge.inativo {
+    background-color: var(--bg-medium);
+    color: var(--text-secondary);
+}
