@@ -2,9 +2,20 @@ const DashboardModule = {
     init(user) {
         this.user = user;
         this.db = firebase.database();
+        
+        // --- VALIDAÇÃO DE SEGURANÇA ---
+        // Pega os elementos do DOM
         this.contentArea = document.getElementById('content-area');
         this.sidebarNav = document.getElementById('sidebar-nav');
         this.headerTitle = document.getElementById('header-title');
+
+        // Verifica se os elementos essenciais existem antes de continuar
+        if (!this.contentArea || !this.sidebarNav || !this.headerTitle) {
+            console.error("ERRO CRÍTICO: Elementos essenciais do dashboard não foram encontrados no HTML. Verifique os IDs 'content-area', 'sidebar-nav' e 'header-title'.");
+            return; // Interrompe a execução para evitar quebrar a página
+        }
+        // --- FIM DA VALIDAÇÃO ---
+
         this.allAtletas = []; // Cache para os atletas carregados
         this.eventListenersAttached = {}; // Controle para evitar duplicidade de listeners
 
@@ -177,7 +188,13 @@ const DashboardModule = {
                 tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">Nenhum atleta cadastrado.</td></tr>';
                 return;
             }
-            this.allAtletas = Object.values(snapshot.val());
+            // Transforma o objeto de objetos em um array de objetos
+            const atletasData = snapshot.val();
+            this.allAtletas = Object.keys(atletasData).map(key => ({
+                uid: key,
+                ...atletasData[key]
+            }));
+
             this.filterAndRenderAtletas();
         });
     },
@@ -219,7 +236,7 @@ const DashboardModule = {
 
         atletas.forEach(atleta => {
             const row = tableBody.insertRow();
-            const statusClass = atleta.ativo ? 'status-badge aluno' : 'status-badge inativo'; // Supondo uma classe 'inativo'
+            const statusClass = atleta.ativo ? 'status-badge aluno' : 'status-badge inativo'; // Supondo uma classe 'inativo' no css
             const statusText = atleta.ativo ? 'Ativo' : 'Inativo';
             
             row.innerHTML = `
