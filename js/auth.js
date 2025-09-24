@@ -1,64 +1,79 @@
-const AuthModule = {
-    init() {
-        this.auth = firebase.auth();
-        this.db = firebase.database();
-        this.addEventListeners();
-    },
-    addEventListeners() {
-        const loginForm = document.getElementById('login-form');
-        if (loginForm) loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+document.addEventListener('DOMContentLoaded', () => {
+    // Esta verificação garante que estamos na página de login/cadastro
+    const loginForm = document.getElementById('login-form');
+    if (!loginForm) {
+        return; // Se não for a página de login, não faz nada.
+    }
 
-        const registerForm = document.getElementById('register-form');
-        if (registerForm) registerForm.addEventListener('submit', (e) => this.handleRegister(e));
+    // Inicializa os serviços do Firebase diretamente
+    const auth = firebase.auth();
+    const db = firebase.database();
 
-        const showRegisterLink = document.getElementById('show-register-link');
-        const showLoginLink = document.getElementById('show-login-link');
-        const loginView = document.getElementById('login-view');
-        const registerView = document.getElementById('register-view');
+    // Referências aos elementos do formulário
+    const registerForm = document.getElementById('register-form');
+    const showRegisterLink = document.getElementById('show-register-link');
+    const showLoginLink = document.getElementById('show-login-link');
+    const loginView = document.getElementById('login-view');
+    const registerView = document.getElementById('register-view');
 
-        if (showRegisterLink) {
-            showRegisterLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                loginView.classList.add('hidden');
-                registerView.classList.remove('hidden');
-            });
-        }
-        if (showLoginLink) {
-            showLoginLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                registerView.classList.add('hidden');
-                loginView.classList.remove('hidden');
-            });
-        }
-    },
-    handleLogin(event) {
-        event.preventDefault();
+    // Funções de Utilitários (integradas para simplicidade)
+    const displayError = (elementId, message) => {
+        const errorElement = document.getElementById(elementId);
+        if (errorElement) errorElement.textContent = message;
+    };
+    const clearError = (elementId) => {
+        const errorElement = document.getElementById(elementId);
+        if (errorElement) errorElement.textContent = "";
+    };
+
+    // Lógica para alternar entre os formulários
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginView.classList.add('hidden');
+            registerView.classList.remove('hidden');
+        });
+    }
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerView.classList.add('hidden');
+            loginView.classList.remove('hidden');
+        });
+    }
+
+    // Lógica de Login
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-        Utils.clearError('login-error');
-        this.auth.signInWithEmailAndPassword(email, password)
+        clearError('login-error');
+        auth.signInWithEmailAndPassword(email, password)
             .catch(error => {
-                Utils.displayError('login-error', 'Email ou senha inválidos.');
+                displayError('login-error', 'Email ou senha inválidos.');
             });
-    },
-    handleRegister(event) {
-        event.preventDefault();
+    });
+
+    // Lógica de Cadastro (a parte crítica, agora corrigida e simplificada)
+    registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
         const name = document.getElementById('register-name').value;
         const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
+        const password = document.getElementById('register-password').value; // Corrigido
         const role = document.querySelector('input[name="role"]:checked').value;
 
-        Utils.clearError('register-error');
+        clearError('register-error');
         if (password.length < 6) {
-            Utils.displayError('register-error', "A senha deve ter no mínimo 6 caracteres.");
+            displayError('register-error', "A senha deve ter no mínimo 6 caracteres.");
             return;
         }
 
-        this.auth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(email, password)
             .then(userCredential => {
-                // Após criar o usuário, executamos a escrita no banco de dados.
-                // Esta é a função crítica que foi simplificada.
                 const user = userCredential.user;
+                const uid = user.uid;
+
+                // Cria o perfil principal em /usuarios
                 const userData = {
                     nome: name,
                     email: email,
@@ -66,19 +81,25 @@ const AuthModule = {
                     dataCadastro: new Date().toISOString(),
                     ativo: true
                 };
-                // Realiza uma única e simples operação de escrita no nó /usuarios.
-                // Esta operação é garantida de funcionar com as regras que estabelecemos.
-                return this.db.ref('usuarios/' + user.uid).set(userData);
-            })
-            .then(() => {
-                // Apenas com o sucesso da escrita no DB, o fluxo continua.
-                // O redirecionamento será tratado pelo onAuthStateChanged no main.js
-                console.log("Usuário criado e perfil salvo com sucesso em /usuarios.");
+                
+                // Define a estrutura secundária baseada no papel (role)
+                const profileData = role === 'atleta' 
+                    ? { dadosPessoais: { nome, email } } 
+                    : { dadosPessoais: { nome, email } };
+                const profilePath = role === 'atleta' ? 'atletas' : 'professores';
+
+                // Cria um objeto com todas as atualizações a serem feitas
+                const updates = {};
+                updates[`/usuarios/${uid}`] = userData;
+                updates[`/${profilePath}/${uid}`] = profileData;
+
+                // Executa a escrita em múltiplos locais. Esta é a forma mais robusta.
+                return db.ref().update(updates);
             })
             .catch(error => {
                 console.error("Erro no processo de cadastro:", error);
                 const message = error.code === 'auth/email-already-in-use' ? "Este email já está cadastrado." : "Erro ao criar conta.";
-                Utils.displayError('register-error', message);
+                displayError('register-error', message);
             });
-    }
-};
+    });
+});
