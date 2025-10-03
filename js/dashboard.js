@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
             await database.ref('logins/' + athleteKey).set({ name, password, role: 'atleta' });
             await database.ref('atletas/' + athleteKey).set({
                 nome: name,
-                perfil: { objetivo: 'Não definido', rp5k: '' },
+                perfil: { objetivo: 'Não definido', rp5k: '', peso: '', altura: '' },
                 plano_treino: {},
                 provas: {},
                 comentarios: {},
@@ -149,6 +149,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="mt-4 space-y-2 text-sm text-gray-600">
                                 <p><strong>Objetivo:</strong> ${atleta.perfil.objetivo || 'Não definido'}</p>
                                 <p><strong>RP 5km:</strong> ${atleta.perfil.rp5k || 'N/A'}</p>
+                                <p><strong>Peso:</strong> ${atleta.perfil.peso || 'N/A'} kg</p>
+                                <p><strong>Altura:</strong> ${atleta.perfil.altura || 'N/A'} cm</p>
                             </div>
                             <div class="mt-6 text-right">
                                 <button data-atleta-id="${atletaId}" class="form-button manage-athlete-btn" style="width: auto; padding: 0.5rem 1rem;">Gerir Atleta</button>
@@ -188,6 +190,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!perfil) return;
         document.getElementById('athlete-goal').value = perfil.objetivo || '';
         document.getElementById('athlete-rp-5k').value = perfil.rp5k || '';
+        document.getElementById('athlete-peso').value = perfil.peso || '';
+        document.getElementById('athlete-altura').value = perfil.altura || '';
     }
 
     function loadTrainingPlan(athleteId) {
@@ -235,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!currentManagingAthleteId) return;
 
         const newTraining = {
-            data: document.getElementById('training-date').value,
+             document.getElementById('training-date').value,
             tipo: document.getElementById('training-type').value,
             descricao: document.getElementById('training-description').value,
             status: 'agendado'
@@ -258,7 +262,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const updatedProfile = {
             objetivo: document.getElementById('athlete-goal').value,
-            rp5k: document.getElementById('athlete-rp-5k').value
+            rp5k: document.getElementById('athlete-rp-5k').value,
+            peso: document.getElementById('athlete-peso').value,
+            altura: document.getElementById('athlete-altura').value
         };
 
         try {
@@ -304,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const newRaceRef = database.ref(`atletas/${athleteId}/provas`).push();
-            await newRaceRef.set({ nome: name, data: date, distancia: distance, categoria: category, resultado: result });
+            await newRaceRef.set({ nome: name,  date, distancia: distance, categoria: category, resultado: result });
             alert('Prova registrada com sucesso!');
             addRaceForm.reset();
             loadRaces(athleteId);
@@ -362,6 +368,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!perfil) return;
         document.getElementById('my-goal').value = perfil.objetivo || '';
         document.getElementById('my-rp-5k').value = perfil.rp5k || '';
+        document.getElementById('my-peso').value = perfil.peso || '';
+        document.getElementById('my-altura').value = perfil.altura || '';
     }
 
     function loadMyTrainingPlan(athleteId) {
@@ -394,7 +402,9 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const updatedProfile = {
             objetivo: document.getElementById('my-goal').value,
-            rp5k: document.getElementById('my-rp-5k').value
+            rp5k: document.getElementById('my-rp-5k').value,
+            peso: document.getElementById('my-peso').value,
+            altura: document.getElementById('my-altura').value
         };
 
         try {
