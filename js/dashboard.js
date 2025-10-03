@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const prescribeTrainingForm = document.getElementById('prescribe-training-form');
     const trainingPlanList = document.getElementById('training-plan-list');
     const athleteProfileForm = document.getElementById('athlete-profile-form');
+    const myTrainingPlanList = document.getElementById('my-training-plan-list');
+    const myProfileForm = document.getElementById('my-profile-form');
 
     let currentManagingAthleteId = null;
 
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loadAthletesGrid();
         } else {
             atletaView.style.display = 'block';
+            loadAthleteDashboard(userData.atletaId);
         }
     }
 
@@ -85,10 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const name = document.getElementById('athlete-name').value.trim();
         const password = document.getElementById('athlete-password').value.trim();
-        if (!name || !password) {
-            alert("Por favor, preencha nome e senha.");
-            return;
-        }
+        if (!name || !password) return;
 
         try {
             const newLoginRef = database.ref('logins').push();
@@ -224,12 +224,66 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- Funções Gerais ---
-    function logoutUser() {
-        localStorage.removeItem('currentUserSession');
-        window.location.href = 'index.html';
+    // --- Funções do Atleta ---
+    function loadAthleteDashboard(athleteId) {
+        const atletaRef = database.ref('atletas/' + athleteId);
+        atletaRef.on('value', (snapshot) => {
+            if (!snapshot.exists()) return;
+            const atleta = snapshot.val();
+            loadMyProfileData(atleta.perfil);
+            loadMyTrainingPlan(athleteId);
+
+            myProfileForm.onsubmit = (e) => handleUpdateMyProfile(e, athleteId);
+            document.addEventListener('click', (e) => {
+                const markDoneBtn = e.target.closest('.mark-as-done-btn');
+                if (markDoneBtn) {
+                    const treinoId = markDoneBtn.dataset.treinoId;
+                    updateTrainingStatus(athleteId, treinoId, 'realizado');
+                }
+            });
+        });
     }
 
-    logoutBtn.addEventListener('click', logoutUser);
-    checkSessionAndInitialize();
-});
+    function loadMyProfileData(perfil) {
+        if (!perfil) return;
+        document.getElementById('my-goal').value = perfil.objetivo || '';
+        document.getElementById('my-rp-5k').value = perfil.rp5k || '';
+    }
+
+    function loadMyTrainingPlan(athleteId) {
+        const planRef = database.ref(`atletas/${athleteId}/plano_treino`).orderByChild('data');
+        planRef.on('value', (snapshot) => {
+            myTrainingPlanList.innerHTML = '';
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const treino = childSnapshot.val();
+                    const statusClass = treino.status === 'realizado' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+                    myTrainingPlanList.innerHTML += `
+                        <div class="p-3 ${statusClass} rounded flex justify-between items-center">
+                            <div>
+                                <p><strong>${new Date(treino.data + 'T03:00:00Z').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' })}:</strong> ${treino.tipo}</p>
+                                <p class="text-sm text-gray-600">${treino.descricao}</p>
+                            </div>
+                            ${treino.status !== 'realizado' ? `<button data-treino-id="${childSnapshot.key}" class="mark-as-done-btn form-button" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.75rem;">Marcar como Feito</button>` : ''}
+                        </div>
+                    `;
+                });
+            } else {
+                myTrainingPlanList.innerHTML = '<p class="text-gray-500">Nenhum treino agendado.</p>';
+            }
+        });
+    }
+
+    async function handleUpdateMyProfile(e, athleteId) {
+        e.preventDefault();
+        const updatedProfile = {
+            objetivo: document.getElementById('my-goal').value,
+            rp5k: document.getElementById('my-rp-5k').value
+        };
+
+        try {
+            await database.ref(`atletas/${athleteId}/perfil`).update(updatedProfile);
+            alert('Perfil atualizado com sucesso!');
+        } catch (error) {
+            console.error("Erro ao atualizar perfil:", error);
+            alert
