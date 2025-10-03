@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // O professor está GARANTIDO aqui. Não precisa de o criar.
     const STATIC_USERS = [
         { name: 'Leandro Alves', role: 'professor', password: '194001', atletaId: null }
     ];
@@ -20,24 +19,22 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const snapshot = await database.ref('logins').once('value');
             if (snapshot.exists()) {
-                const firebaseUsers = Object.values(snapshot.val());
-                firebaseUsers.forEach(fbUser => {
-                    if (fbUser.role === 'atleta') {
-                        // Salva o ID do nó (chave) junto com o usuário
-                        const atletaId = Object.keys(snapshot.val()).find(key => snapshot.val()[key] === fbUser);
-                        ALL_USERS.push({ ...fbUser, atletaId });
+                const data = snapshot.val();
+                Object.keys(data).forEach(key => {
+                    const user = data[key];
+                    if (user.role === 'atleta') {
+                        ALL_USERS.push({ ...user, atletaId: key });
                     }
                 });
             }
         } catch (error) {
-            console.error("Aviso: Não foi possível carregar alunos do Firebase.", error);
+            console.error("Erro ao carregar atletas:", error);
         }
 
         populateUserSelect();
     }
 
     function populateUserSelect() {
-        if (!userSelect) return;
         userSelect.innerHTML = '<option value="">Selecione o seu utilizador...</option>';
         ALL_USERS.forEach(user => {
             const option = document.createElement('option');
@@ -64,7 +61,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const user = ALL_USERS.find(u => u.name === selectedUserName);
 
         if (user && user.password === enteredPassword) {
-            const sessionData = { name: user.name, role: user.role, atletaId: user.atletaId || null };
+            const sessionData = { 
+                name: user.name, 
+                role: user.role, 
+                atletaId: user.atletaId || null 
+            };
             localStorage.setItem('currentUserSession', JSON.stringify(sessionData));
             window.location.href = 'dashboard.html';
         } else {
