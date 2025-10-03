@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // --- Seletores do DOM ---
     const userNameElement = document.getElementById('user-name');
     const logoutBtn = document.getElementById('logout-btn');
     const professorView = document.getElementById('professor-view');
@@ -32,10 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const newCommentInput = document.getElementById('new-comment');
     const postCommentBtn = document.getElementById('post-comment-btn');
     const commentsList = document.getElementById('comments-list');
+    const notificationsList = document.getElementById('notifications-list');
 
     let currentManagingAthleteId = null;
 
-    // --- Lógica Principal de Inicialização ---
     function checkSessionAndInitialize() {
         const sessionDataString = localStorage.getItem('currentUserSession');
         if (!sessionDataString) {
@@ -56,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loadNews();
             loadCalendar();
             loadVitrine();
+            loadNotifications();
         } else {
             atletaView.style.display = 'block';
             loadAthleteDashboard(userData.atletaId);
@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- Funções do Professor ---
     function setupProfessorEventListeners() {
         showAddAthleteBtn.addEventListener('click', () => {
             addAthleteContainer.style.display = 'block';
@@ -111,10 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!name || !password) return;
 
         try {
-            const newLoginRef = database.ref('logins').push();
-            await newLoginRef.set({ name, password, role: 'atleta' });
-
-            const athleteKey = newLoginRef.key;
+            const athleteKey = database.ref('logins').push().key;
+            await database.ref('logins/' + athleteKey).set({ name, password, role: 'atleta' });
             await database.ref('atletas/' + athleteKey).set({
                 nome: name,
                 perfil: { objetivo: 'Não definido', rp5k: '' },
@@ -128,10 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {
             addAthleteForm.reset();
             addAthleteContainer.style.display = 'none';
             showAddAthleteBtn.style.display = 'block';
-            loadAthletesGrid(); // Atualiza a lista imediatamente
+            loadAthletesGrid();
         } catch (error) {
             console.error("Erro ao cadastrar atleta:", error);
-            alert("Falha ao cadastrar atleta. Verifique o console para detalhes.");
+            alert("Falha ao cadastrar atleta.");
         }
     }
 
@@ -157,12 +154,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
                 });
             } else {
-                athleteGridContainer.innerHTML = '<p class="text-gray-500 col-span-full text-center">Nenhum atleta cadastrado. Clique em "+ Adicionar Aluno" para começar.</p>';
+                athleteGridContainer.innerHTML = '<p class="text-gray-500 col-span-full text-center">Nenhum atleta cadastrado.</p>';
             }
         });
     }
 
-    // --- Funções do Painel de Gestão Individual ---
     function openManagementPanel(athleteId) {
         currentManagingAthleteId = athleteId;
         showProfessorSubView('management');
@@ -197,10 +193,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
                     const treino = childSnapshot.val();
+                    const statusClass = treino.status === 'realizado' ? 'text-green-800' : 'text-yellow-800';
                     trainingPlanList.innerHTML += `
                         <div class="p-3 bg-gray-100 rounded">
                             <p><strong>${new Date(treino.data + 'T03:00:00Z').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' })}:</strong> ${treino.tipo}</p>
                             <p class="text-sm text-gray-600">${treino.descricao}</p>
+                            <p class="text-xs ${statusClass}">Status: ${treino.status || 'agendado'}</p>
                         </div>
                     `;
                 });
@@ -225,10 +223,10 @@ document.addEventListener('DOMContentLoaded', function () {
             await database.ref(`atletas/${currentManagingAthleteId}/plano_treino`).push().set(newTraining);
             alert('Treino agendado com sucesso!');
             prescribeTrainingForm.reset();
-            loadTrainingPlan(currentManagingAthleteId); // Atualiza a lista
+            loadTrainingPlan(currentManagingAthleteId);
         } catch (error) {
             console.error("Erro ao agendar treino:", error);
-            alert('Falha ao agendar treino. Verifique o console.');
+            alert('Falha ao agendar treino.');
         }
     }
 
@@ -244,10 +242,10 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             await database.ref(`atletas/${currentManagingAthleteId}/perfil`).update(updatedProfile);
             alert('Perfil do atleta atualizado com sucesso!');
-            loadProfileData(updatedProfile); // Atualiza visualmente
+            loadProfileData(updatedProfile);
         } catch (error) {
             console.error("Erro ao atualizar perfil:", error);
-            alert('Falha ao atualizar perfil. Verifique o console.');
+            alert('Falha ao atualizar perfil.');
         }
     }
 
@@ -293,14 +291,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadPerformanceChart(athleteId) {
         const chartContainer = document.getElementById('performance-chart');
         chartContainer.innerHTML = '<p class="text-center text-gray-500">Gráfico de desempenho em desenvolvimento...</p>';
-        // Aqui você pode integrar uma biblioteca como Chart.js no futuro
     }
 
     function loadSmartSuggestions(athleteId) {
         const suggestionsContainer = document.getElementById('smart-suggestions');
         suggestionsContainer.innerHTML = '<p class="text-gray-500">Analisando desempenho...</p>';
-
-        // Simulação de sugestão inteligente
         setTimeout(() => {
             suggestionsContainer.innerHTML = `
                 <div class="p-3 bg-blue-100 rounded">
@@ -310,7 +305,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 1000);
     }
 
-    // --- Funções do Atleta ---
     function loadAthleteDashboard(athleteId) {
         const atletaRef = database.ref('atletas/' + athleteId);
         atletaRef.on('value', (snapshot) => {
@@ -376,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Perfil atualizado com sucesso!');
         } catch (error) {
             console.error("Erro ao atualizar perfil:", error);
-            alert('Falha ao atualizar perfil. Verifique o console.');
+            alert('Falha ao atualizar perfil.');
         }
     }
 
@@ -446,14 +440,50 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             await database.ref(`atletas/${athleteId}/plano_treino/${trainingId}`).update({ status });
             alert('Treino marcado como realizado!');
-            loadMyTrainingPlan(athleteId); // Atualiza a lista
+            
+            const atletaRef = database.ref(`atletas/${athleteId}`);
+            const atletaSnapshot = await atletaRef.once('value');
+            const atleta = atletaSnapshot.val();
+            addNotification(atleta.nome, `Marcou o treino de ${new Date().toLocaleDateString('pt-BR')} como feito.`);
+            
+            loadMyTrainingPlan(athleteId);
         } catch (error) {
             console.error("Erro ao marcar treino como feito:", error);
             alert('Falha ao marcar treino como feito.');
         }
     }
 
-    // --- Funções de Notícias e Calendário ---
+    function addNotification(athleteName, message) {
+        const notificationRef = database.ref('notificacoes').push();
+        notificationRef.set({
+            autor: athleteName,
+            mensagem: message,
+            timestamp: Date.now(),
+            lido: false
+        });
+    }
+
+    function loadNotifications() {
+        const notificationsRef = database.ref('notificacoes');
+        notificationsRef.on('value', (snapshot) => {
+            const notificationsList = document.getElementById('notifications-list');
+            notificationsList.innerHTML = '';
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const notificacao = childSnapshot.val();
+                    notificationsList.innerHTML += `
+                        <div class="p-3 bg-gray-100 rounded">
+                            <p><strong>${notificacao.autor}:</strong> ${notificacao.mensagem}</p>
+                            <p class="text-sm text-gray-600">${new Date(notificacao.timestamp).toLocaleString('pt-BR')}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                notificationsList.innerHTML = '<p class="text-gray-500">Nenhuma notificação.</p>';
+            }
+        });
+    }
+
     function loadNews() {
         const newsRef = database.ref('noticias');
         newsRef.on('value', (snapshot) => {
@@ -494,7 +524,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Funções da Vitrine ---
     function loadVitrine() {
         const vitrineRef = database.ref('vitrine');
         vitrineRef.on('value', (snapshot) => {
@@ -522,7 +551,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Funções Gerais ---
     function logoutUser() {
         localStorage.removeItem('currentUserSession');
         window.location.href = 'index.html';
