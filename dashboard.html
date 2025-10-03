@@ -41,6 +41,31 @@
             margin-top: 0.5rem;
             display: flex; gap: 0.5rem;
         }
+        .training-feedback {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+        .professor-feedback {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #dbeafe;
+            border-radius: 4px;
+            font-style: italic;
+        }
+        .race-distance {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .chart-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #9ca3af;
+        }
     </style>
 </head>
 <body class="dashboard-page">
@@ -119,6 +144,8 @@
                             <form id="add-race-form" class="mt-4 space-y-4">
                                 <input type="text" id="race-name" class="form-input" required placeholder="Nome da Prova">
                                 <input type="date" id="race-date" class="form-input" required>
+                                <input type="number" id="race-distance" class="form-input" required placeholder="Distância (km)">
+                                <input type="text" id="race-category" class="form-input" placeholder="Categoria (ex: 5km, 10km, Meia)">
                                 <input type="text" id="race-result" class="form-input" placeholder="Resultado (ex: 00:22:30)">
                                 <button type="submit" class="form-button">Registrar Prova</button>
                             </form>
@@ -127,7 +154,7 @@
                         <div class="athlete-card">
                             <h3 class="text-xl font-bold">Gráfico de Desempenho</h3>
                             <div class="chart-container" id="performance-chart">
-                                <p class="text-center text-gray-500">Carregando gráfico...</p>
+                                <div class="chart-placeholder">Gráfico de desempenho em desenvolvimento...</div>
                             </div>
                         </div>
                     </div>
@@ -170,7 +197,7 @@
                     <div class="athlete-card">
                         <h3 class="text-xl font-bold">Gráfico de Desempenho</h3>
                         <div class="chart-container" id="my-performance-chart">
-                            <p class="text-center text-gray-500">Carregando gráfico...</p>
+                            <div class="chart-placeholder">Gráfico de desempenho em desenvolvimento...</div>
                         </div>
                     </div>
                 </div>
