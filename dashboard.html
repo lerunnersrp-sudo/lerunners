@@ -16,6 +16,19 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
         }
+        .news-card {
+            background-color: #f3f4f6; border-radius: 12px; padding: 1.5rem;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+        .comment-box {
+            border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-top: 1rem;
+        }
+        .comment-item {
+            padding: 0.5rem; border-bottom: 1px solid #e5e7eb;
+        }
+        .chart-container {
+            height: 300px; background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="dashboard-page">
@@ -85,6 +98,22 @@
                             <h3 class="text-xl font-bold">Plano de Treino</h3>
                             <div id="training-plan-list" class="mt-4 space-y-3"></div>
                         </div>
+                        <div class="athlete-card">
+                            <h3 class="text-xl font-bold">Provas Oficiais</h3>
+                            <form id="add-race-form" class="mt-4 space-y-4">
+                                <input type="text" id="race-name" class="form-input" required placeholder="Nome da Prova">
+                                <input type="date" id="race-date" class="form-input" required>
+                                <input type="text" id="race-result" class="form-input" placeholder="Resultado (ex: 00:22:30)">
+                                <button type="submit" class="form-button">Registrar Prova</button>
+                            </form>
+                            <div id="races-list" class="mt-4 space-y-3"></div>
+                        </div>
+                        <div class="athlete-card">
+                            <h3 class="text-xl font-bold">Gráfico de Desempenho</h3>
+                            <div class="chart-container" id="performance-chart">
+                                <p class="text-center text-gray-500">Carregando gráfico...</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="space-y-6">
                         <div class="athlete-card">
@@ -96,6 +125,12 @@
                                 <input type="text" id="athlete-rp-5k" class="form-input" placeholder="Ex: 00:24:30">
                                 <button type="submit" class="form-button">Salvar Perfil</button>
                             </form>
+                        </div>
+                        <div class="athlete-card">
+                            <h3 class="text-xl font-bold">Sugestões Inteligentes</h3>
+                            <div id="smart-suggestions" class="mt-4 space-y-3">
+                                <p class="text-gray-500">Analisando desempenho...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -112,6 +147,16 @@
                         <h3 class="text-xl font-bold">Treinos Agendados</h3>
                         <div id="my-training-plan-list" class="mt-4 space-y-3"></div>
                     </div>
+                    <div class="athlete-card">
+                        <h3 class="text-xl font-bold">Minhas Provas</h3>
+                        <div id="my-races-list" class="mt-4 space-y-3"></div>
+                    </div>
+                    <div class="athlete-card">
+                        <h3 class="text-xl font-bold">Gráfico de Desempenho</h3>
+                        <div class="chart-container" id="my-performance-chart">
+                            <p class="text-center text-gray-500">Carregando gráfico...</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="space-y-6">
                     <div class="athlete-card">
@@ -124,6 +169,30 @@
                             <button type="submit" class="form-button">Salvar Perfil</button>
                         </form>
                     </div>
+                    <div class="athlete-card">
+                        <h3 class="text-xl font-bold">Comentários da Equipe</h3>
+                        <div id="comments-section" class="mt-4 space-y-3">
+                            <textarea id="new-comment" class="form-input" rows="2" placeholder="Deixe seu comentário..."></textarea>
+                            <button type="button" id="post-comment-btn" class="form-button">Enviar Comentário</button>
+                            <div id="comments-list" class="comment-box mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Container Geral da Visão de Notícias -->
+        <div id="news-view" class="view">
+             <div class="section-header">
+                <h2 class="text-3xl font-bold">Notícias da Equipe</h2>
+             </div>
+             <div class="grid grid-cols-1 gap-6 mt-6">
+                <div class="news-card">
+                    <h3 class="text-xl font-bold">Últimas Notícias</h3>
+                    <div id="news-list" class="mt-4 space-y-3"></div>
+                </div>
+                <div class="news-card">
+                    <h3 class="text-xl font-bold">Calendário de Provas</h3>
+                    <div id="calendar-list" class="mt-4 space-y-3"></div>
                 </div>
             </div>
         </div>
