@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const firebaseUsers = Object.values(snapshot.val());
                 firebaseUsers.forEach(fbUser => {
                     if (fbUser.role === 'atleta') {
-                        ALL_USERS.push({ ...fbUser, atletaId: Object.keys(snapshot.val()).find(key => snapshot.val()[key] === fbUser) });
+                        // Salva o ID do nó (chave) junto com o usuário
+                        const atletaId = Object.keys(snapshot.val()).find(key => snapshot.val()[key] === fbUser);
+                        ALL_USERS.push({ ...fbUser, atletaId });
                     }
                 });
             }
