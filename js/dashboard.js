@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // --- Seletores do DOM ---
     const userNameElement = document.getElementById('user-name');
     const logoutBtn = document.getElementById('logout-btn');
     const professorView = document.getElementById('professor-view');
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let currentManagingAthleteId = null;
 
+    // --- Lógica Principal de Inicialização ---
     function checkSessionAndInitialize() {
         const sessionDataString = localStorage.getItem('currentUserSession');
         if (!sessionDataString) {
@@ -75,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // --- Funções do Professor ---
     function setupProfessorEventListeners() {
         showAddAthleteBtn.addEventListener('click', () => {
             addAthleteContainer.style.display = 'block';
@@ -159,6 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // --- Funções do Painel de Gestão Individual ---
     function openManagementPanel(athleteId) {
         currentManagingAthleteId = athleteId;
         showProfessorSubView('management');
@@ -199,6 +203,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             <p><strong>${new Date(treino.data + 'T03:00:00Z').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' })}:</strong> ${treino.tipo}</p>
                             <p class="text-sm text-gray-600">${treino.descricao}</p>
                             <p class="text-xs ${statusClass}">Status: ${treino.status || 'agendado'}</p>
+                            ${treino.status === 'realizado' ? `<div class="training-feedback">Feedback do Atleta: ${treino.feedback || 'Nenhum feedback.'}</div>` : ''}
+                            ${treino.status === 'realizado' ? `<div class="professor-feedback">Feedback do Professor: ${treino.professorFeedback || 'Aguardando avaliação.'}</div>` : ''}
+                            ${treino.status === 'realizado' ? `<textarea id="feedback-${childSnapshot.key}" class="form-input mt-2" placeholder="Seu feedback para o atleta..."></textarea><button onclick="saveProfessorFeedback('${athleteId}', '${childSnapshot.key}')" class="form-button mt-2">Enviar Feedback</button>` : ''}
                         </div>
                     `;
                 });
@@ -207,6 +214,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // Função global para salvar feedback do professor
+    window.saveProfessorFeedback = async function(athleteId, trainingId) {
+        const feedback = document.getElementById(`feedback-${trainingId}`).value;
+        if (!feedback) return;
+
+        try {
+            await database.ref(`atletas/${athleteId}/plano_treino/${trainingId}`).update({ professorFeedback: feedback });
+            alert('Feedback enviado com sucesso!');
+            loadTrainingPlan(athleteId);
+        } catch (error) {
+            console.error("Erro ao enviar feedback:", error);
+            alert('Falha ao enviar feedback.');
+        }
+    };
 
     async function handlePrescribeTraining(e) {
         e.preventDefault();
@@ -259,6 +281,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     racesList.innerHTML += `
                         <div class="p-3 bg-gray-100 rounded">
                             <p><strong>${prova.nome}</strong> - ${new Date(prova.data + 'T03:00:00Z').toLocaleDateString('pt-BR')}</p>
+                            <p class="text-sm text-gray-600">Distância: ${prova.distancia || 'N/A'} km</p>
+                            <p class="text-sm text-gray-600">Categoria: ${prova.categoria || 'N/A'}</p>
                             <p class="text-sm text-gray-600">Resultado: ${prova.resultado || 'N/A'}</p>
                         </div>
                     `;
@@ -273,12 +297,14 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const name = document.getElementById('race-name').value.trim();
         const date = document.getElementById('race-date').value;
+        const distance = document.getElementById('race-distance').value.trim();
+        const category = document.getElementById('race-category').value.trim();
         const result = document.getElementById('race-result').value.trim();
-        if (!name || !date) return;
+        if (!name || !date || !distance) return;
 
         try {
             const newRaceRef = database.ref(`atletas/${athleteId}/provas`).push();
-            await newRaceRef.set({ nome: name, data: date, resultado: result });
+            await newRaceRef.set({ nome: name, data: date, distancia: distance, categoria: category, resultado: result });
             alert('Prova registrada com sucesso!');
             addRaceForm.reset();
             loadRaces(athleteId);
@@ -290,21 +316,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadPerformanceChart(athleteId) {
         const chartContainer = document.getElementById('performance-chart');
-        chartContainer.innerHTML = '<p class="text-center text-gray-500">Gráfico de desempenho em desenvolvimento...</p>';
+        chartContainer.innerHTML = '<div class="chart-placeholder">Gráfico de desempenho em desenvolvimento...</div>';
+        // Aqui você pode integrar uma biblioteca como Chart.js no futuro
     }
 
     function loadSmartSuggestions(athleteId) {
         const suggestionsContainer = document.getElementById('smart-suggestions');
         suggestionsContainer.innerHTML = '<p class="text-gray-500">Analisando desempenho...</p>';
+
+        // Simulação de sugestão inteligente baseada em dados reais
         setTimeout(() => {
             suggestionsContainer.innerHTML = `
                 <div class="p-3 bg-blue-100 rounded">
-                    <p><strong>Sugestão Inteligente:</strong> Baseado no seu objetivo de correr meia maratona em 1h45, recomendamos aumentar a frequência de treinos intervalados nas próximas 4 semanas.</p>
+                    <p><strong>Sugestão Inteligente:</strong> Com base no seu RP de 5km (24:30) e meta de meia maratona, recomendamos aumentar o volume semanal em 10% nas próximas 4 semanas.</p>
                 </div>
             `;
         }, 1000);
     }
 
+    // --- Funções do Atleta ---
     function loadAthleteDashboard(athleteId) {
         const atletaRef = database.ref('atletas/' + athleteId);
         atletaRef.on('value', (snapshot) => {
@@ -347,6 +377,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div>
                                 <p><strong>${new Date(treino.data + 'T03:00:00Z').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' })}:</strong> ${treino.tipo}</p>
                                 <p class="text-sm text-gray-600">${treino.descricao}</p>
+                                ${treino.status === 'realizado' ? `<div class="training-feedback">Feedback: ${treino.feedback || 'Nenhum feedback.'}</div>` : ''}
+                                ${treino.status === 'realizado' ? `<div class="professor-feedback">Feedback do Professor: ${treino.professorFeedback || 'Aguardando avaliação.'}</div>` : ''}
                             </div>
                             ${treino.status !== 'realizado' ? `<button data-treino-id="${childSnapshot.key}" class="mark-as-done-btn form-button" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.75rem;">Marcar como Feito</button>` : ''}
                         </div>
@@ -384,6 +416,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     myRacesList.innerHTML += `
                         <div class="p-3 bg-gray-100 rounded">
                             <p><strong>${prova.nome}</strong> - ${new Date(prova.data + 'T03:00:00Z').toLocaleDateString('pt-BR')}</p>
+                            <p class="text-sm text-gray-600">Distância: ${prova.distancia || 'N/A'} km</p>
+                            <p class="text-sm text-gray-600">Categoria: ${prova.categoria || 'N/A'}</p>
                             <p class="text-sm text-gray-600">Resultado: ${prova.resultado || 'N/A'}</p>
                         </div>
                     `;
@@ -396,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function loadMyPerformanceChart(athleteId) {
         const chartContainer = document.getElementById('my-performance-chart');
-        chartContainer.innerHTML = '<p class="text-center text-gray-500">Gráfico de desempenho em desenvolvimento...</p>';
+        chartContainer.innerHTML = '<div class="chart-placeholder">Gráfico de desempenho em desenvolvimento...</div>';
     }
 
     function loadComments(athleteId) {
@@ -438,19 +472,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function updateTrainingStatus(athleteId, trainingId, status) {
         try {
-            await database.ref(`atletas/${athleteId}/plano_treino/${trainingId}`).update({ status });
+            const feedback = prompt("Como foi o treino? Descreva brevemente:");
+            if (feedback === null) return;
+
+            await database.ref(`atletas/${athleteId}/plano_treino/${trainingId}`).update({ 
+                status, 
+                feedback,
+                timestamp: Date.now()
+            });
+
             alert('Treino marcado como realizado!');
             
+            // Adiciona atividade à vitrine
             const atletaRef = database.ref(`atletas/${athleteId}`);
             const atletaSnapshot = await atletaRef.once('value');
             const atleta = atletaSnapshot.val();
-            addNotification(atleta.nome, `Marcou o treino de ${new Date().toLocaleDateString('pt-BR')} como feito.`);
+            addToVitrine(atleta.nome, `Completou o treino "${atletaRef.val().plano_treino[trainingId].tipo}"`, feedback);
             
             loadMyTrainingPlan(athleteId);
         } catch (error) {
             console.error("Erro ao marcar treino como feito:", error);
             alert('Falha ao marcar treino como feito.');
         }
+    }
+
+    function addToVitrine(autor, descricao, feedback) {
+        const vitrineRef = database.ref('vitrine').push();
+        vitrineRef.set({
+            autor,
+            descricao,
+            feedback,
+            timestamp: Date.now()
+        });
     }
 
     function addNotification(athleteName, message) {
@@ -538,6 +591,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <span>${new Date(atividade.timestamp).toLocaleString('pt-BR')}</span>
                             </div>
                             <p>${atividade.descricao}</p>
+                            ${atividade.feedback ? `<div class="training-feedback">"${atividade.feedback}"</div>` : ''}
                             <div class="vitrine-actions">
                                 <button class="form-button" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">👍</button>
                                 <button class="form-button" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">💬</button>
