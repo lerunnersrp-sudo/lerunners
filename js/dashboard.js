@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const smartSuggestions = document.getElementById('smart-suggestions');
     const newsList = document.getElementById('news-list');
     const calendarList = document.getElementById('calendar-list');
+    const vitrineList = document.getElementById('vitrine-list');
     const commentsSection = document.getElementById('comments-section');
     const newCommentInput = document.getElementById('new-comment');
     const postCommentBtn = document.getElementById('post-comment-btn');
@@ -54,11 +55,13 @@ document.addEventListener('DOMContentLoaded', function () {
             loadAthletesGrid();
             loadNews();
             loadCalendar();
+            loadVitrine();
         } else {
             atletaView.style.display = 'block';
             loadAthleteDashboard(userData.atletaId);
             loadNews();
             loadCalendar();
+            loadVitrine();
         }
     }
 
@@ -117,7 +120,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 perfil: { objetivo: 'Não definido', rp5k: '' },
                 plano_treino: {},
                 provas: {},
-                comentarios: {}
+                comentarios: {},
+                atividades_strava: {}
             });
 
             alert(`Atleta '${name}' cadastrado com sucesso!`);
@@ -486,6 +490,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             } else {
                 calendarList.innerHTML = '<p class="text-gray-500">Nenhum evento no calendário.</p>';
+            }
+        });
+    }
+
+    // --- Funções da Vitrine ---
+    function loadVitrine() {
+        const vitrineRef = database.ref('vitrine');
+        vitrineRef.on('value', (snapshot) => {
+            vitrineList.innerHTML = '';
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const atividade = childSnapshot.val();
+                    vitrineList.innerHTML += `
+                        <div class="vitrine-item">
+                            <div class="vitrine-header">
+                                <strong>${atividade.autor}</strong>
+                                <span>${new Date(atividade.timestamp).toLocaleString('pt-BR')}</span>
+                            </div>
+                            <p>${atividade.descricao}</p>
+                            <div class="vitrine-actions">
+                                <button class="form-button" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">👍</button>
+                                <button class="form-button" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">💬</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                vitrineList.innerHTML = '<p class="text-gray-500">Nenhuma atividade na vitrine.</p>';
             }
         });
     }
