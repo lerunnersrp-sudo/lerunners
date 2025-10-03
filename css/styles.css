@@ -91,3 +91,68 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxyge
     margin-top: 0.5rem;
     display: flex; gap: 0.5rem;
 }
+.training-feedback {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 4px;
+}
+.professor-feedback {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: #dbeafe;
+    border-radius: 4px;
+    font-style: italic;
+}
+.race-distance {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+.chart-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #9ca3af;
+}
+
+/* Professional Design for LeRunners */
+.header-left svg {
+    width: 40px;
+    height: 40px;
+    fill: #ffffff;
+    background: #000000;
+    border-radius: 8px;
+}
+.header-left h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000000;
+}
+.form-button {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.form-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.logout-btn {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+}
+.logout-btn:hover {
+    background: #1f2937;
+}
