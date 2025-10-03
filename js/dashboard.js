@@ -85,24 +85,30 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const name = document.getElementById('athlete-name').value.trim();
         const password = document.getElementById('athlete-password').value.trim();
-        if (!name || !password) return;
+        if (!name || !password) {
+            alert("Por favor, preencha nome e senha.");
+            return;
+        }
 
         try {
             const newLoginRef = database.ref('logins').push();
             await newLoginRef.set({ name, password, role: 'atleta' });
 
-            await database.ref('atletas/' + newLoginRef.key).set({
+            const athleteKey = newLoginRef.key;
+            await database.ref('atletas/' + athleteKey).set({
                 nome: name,
-                perfil: { objetivo: 'Não definido' }
+                perfil: { objetivo: 'Não definido', rp5k: '' },
+                plano_treino: {}
             });
 
             alert(`Atleta '${name}' cadastrado com sucesso!`);
             addAthleteForm.reset();
             addAthleteContainer.style.display = 'none';
             showAddAthleteBtn.style.display = 'block';
+            loadAthletesGrid(); // Atualiza a lista imediatamente
         } catch (error) {
             console.error("Erro ao cadastrar atleta:", error);
-            alert("Falha ao cadastrar atleta.");
+            alert("Falha ao cadastrar atleta. Verifique o console para detalhes.");
         }
     }
 
@@ -119,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <h3 class="font-bold text-xl text-gray-800">${atleta.nome}</h3>
                             <div class="mt-4 space-y-2 text-sm text-gray-600">
                                 <p><strong>Objetivo:</strong> ${atleta.perfil.objetivo || 'Não definido'}</p>
+                                <p><strong>RP 5km:</strong> ${atleta.perfil.rp5k || 'N/A'}</p>
                             </div>
                             <div class="mt-6 text-right">
                                 <button data-atleta-id="${atletaId}" class="form-button manage-athlete-btn" style="width: auto; padding: 0.5rem 1rem;">Gerir Atleta</button>
@@ -191,8 +198,10 @@ document.addEventListener('DOMContentLoaded', function () {
             await database.ref(`atletas/${currentManagingAthleteId}/plano_treino`).push().set(newTraining);
             alert('Treino agendado com sucesso!');
             prescribeTrainingForm.reset();
+            loadTrainingPlan(currentManagingAthleteId); // Atualiza a lista
         } catch (error) {
-            alert('Falha ao agendar treino.');
+            console.error("Erro ao agendar treino:", error);
+            alert('Falha ao agendar treino. Verifique o console.');
         }
     }
 
@@ -208,8 +217,10 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             await database.ref(`atletas/${currentManagingAthleteId}/perfil`).update(updatedProfile);
             alert('Perfil do atleta atualizado com sucesso!');
+            loadProfileData(updatedProfile); // Atualiza visualmente
         } catch (error) {
-            alert('Falha ao atualizar perfil.');
+            console.error("Erro ao atualizar perfil:", error);
+            alert('Falha ao atualizar perfil. Verifique o console.');
         }
     }
 
