@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     // O professor está GARANTIDO aqui. Não precisa de o criar.
     const STATIC_USERS = [
-        { name: 'Leandro Alves', role: 'professor', password: '194001' }
+        { name: 'Leandro Alves', role: 'professor', password: '194001', atletaId: null }
     ];
     let ALL_USERS = [...STATIC_USERS];
 
@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (snapshot.exists()) {
                 const firebaseUsers = Object.values(snapshot.val());
                 firebaseUsers.forEach(fbUser => {
-                    if (fbUser.role === 'atleta') ALL_USERS.push(fbUser);
+                    if (fbUser.role === 'atleta') {
+                        ALL_USERS.push({ ...fbUser, atletaId: Object.keys(snapshot.val()).find(key => snapshot.val()[key] === fbUser) });
+                    }
                 });
             }
         } catch (error) {
@@ -60,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const user = ALL_USERS.find(u => u.name === selectedUserName);
 
         if (user && user.password === enteredPassword) {
-            const sessionData = { name: user.name, role: user.role };
+            const sessionData = { name: user.name, role: user.role, atletaId: user.atletaId || null };
             localStorage.setItem('currentUserSession', JSON.stringify(sessionData));
             window.location.href = 'dashboard.html';
         } else {
