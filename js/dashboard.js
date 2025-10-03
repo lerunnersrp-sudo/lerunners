@@ -286,4 +286,27 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Perfil atualizado com sucesso!');
         } catch (error) {
             console.error("Erro ao atualizar perfil:", error);
-            alert
+            alert('Falha ao atualizar perfil. Verifique o console.');
+        }
+    }
+
+    async function updateTrainingStatus(athleteId, trainingId, status) {
+        try {
+            await database.ref(`atletas/${athleteId}/plano_treino/${trainingId}`).update({ status });
+            alert('Treino marcado como realizado!');
+            loadMyTrainingPlan(athleteId); // Atualiza a lista
+        } catch (error) {
+            console.error("Erro ao marcar treino como feito:", error);
+            alert('Falha ao marcar treino como feito.');
+        }
+    }
+
+    // --- Funções Gerais ---
+    function logoutUser() {
+        localStorage.removeItem('currentUserSession');
+        window.location.href = 'index.html';
+    }
+
+    logoutBtn.addEventListener('click', logoutUser);
+    checkSessionAndInitialize();
+});
