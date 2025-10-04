@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!currentManagingAthleteId) return;
 
         const newTraining = {
-             document.getElementById('training-date').value,
+            data: document.getElementById('training-date').value,
             tipo: document.getElementById('training-type').value,
             descricao: document.getElementById('training-description').value,
             status: 'agendado'
